@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Requests\AppRequest;
 use App\Repositories\AppRepositoryInterface;
 use Illuminate\Http\Request;
 
@@ -13,19 +14,19 @@ class AppController extends Controller
         $this->appRepository = $appRepository;
     }
 
-    public function index(Request $request)
+    public function index(Request $request, $perPage = 3)
     {
         // dd($request);
         if(!$request->hasAny(['name', 'age'])){
-            $apps = $this->appRepository->find();
+            $apps = $this->appRepository->find($perPage);
         }
         else{
-            $apps = $this->appRepository->filter($request->all());
+            $apps = $this->appRepository->filter($request->all(), true, 3);
         }
         return view('oi', compact('apps'));
     }
 
-    public function store(Request $request)  //nao deixar escrever data futuro -- fazer
+    public function store(AppRequest $request)  //nao deixar escrever data futuro -- fazer
     {
          
         $this->appRepository->store($request->all());

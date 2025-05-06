@@ -27,11 +27,11 @@ class AppRepository implements AppRepositoryInterface{
         return $nome;
     }
 
-    public function find(){
+    public function find($perPage = 3){
     //    return App::all();
 
-        return $this->model->all();
-    }
+    return $this->model->paginate($perPage);   
+ }
 
     public function findById($id){
 
@@ -49,23 +49,23 @@ class AppRepository implements AppRepositoryInterface{
 
     }
 
-    public function filter($filter)
+    public function filter($filter, $paginate = true, $perPage = 3)
     {
       // dd($filter->has('age'));
         $search = $this->model->newQuery();
 
-        if($filter['name'])
+        if(isset($filter['name']))
         {
             $name = mb_strtoupper(str_replace(' ', '%', trim($filter['name'])));
             $search->where(DB::raw("UPPER(name)"), 'LIKE', '%' . $name . '%');        }
 
-        if($filter['age']){
+        if(isset($filter['age'])){
             $age = (int) $filter['age']; // Converte explicitamente para inteiro
             $data_inicio = now()->subYears($age + 1)->addDay()->toDateString();
             $data_fim = now()->subYears($age)->toDateString();
             $search->whereBetween('birthdate', [$data_inicio, $data_fim]);
         }
-        return $search->get();
+        return $paginate ? $search->paginate($perPage) : $search->get();
     
         // return $search
         //             ->where(DB::raw("UPPER(name)"), 'LIKE', '%' . mb_strtoupper(trim($filter)) . '%')

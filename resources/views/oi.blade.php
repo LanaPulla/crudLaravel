@@ -1,21 +1,22 @@
 <h1> Nomes </h1>
+<x-alert/>
 <form method="POST" action="{{ route('app.store') }}">
     @csrf()
     <label>Nome</label><br>
-    <input type="text" placeholder="Escreva o nome" name="name"></input>
+    <input type="text" placeholder="Escreva o nome" name="name" value="{{ old('name') }}"></input>
     <br>
     <label>Data de Nascimento</label><br>
-    <input type="date" placeholder="Escreva a idade" name="birthdate"></input>
+    <input type="date" placeholder="Escreva a idade" name="birthdate" value="{{ old('birthdate') }}"></input>
     <br>
     <input id="submit"type="submit"></input>
 </form>
 
 <form method="GET" action="{{ route('app.index') }}">
     <label>Filtro nome</label><br>
-    <input type="text" name="name">
+    <input type="text" name="name" value="{{ request('name') }}">
     <br>
     <label>Filtro idade</label><br>
-    <input type="text" name="age">
+    <input type="text" name="age" value="{{ request('age') }}">
     <br>
     <button id="submit" type="submit">Buscar</button>
 </form>
@@ -48,15 +49,30 @@
                 </td>
                
             </tr>
+            
             @endforeach
+            
             @endisset
     
     </tbody>
 </table>
 
+<div class="d-flex justify-content-center">
+    {{ $apps->appends(request()->query())->links() }}
+</div>
 <style>
     #submit{
         margin:5px;
     }
+    .pagination {
+        display:flex;
+        list-style-type: none;
+        text-decoration: none;
+    }
+    .pagination .page-item .page-link {
+        padding:5px;
+        text-decoration: none; /* Remove o estilo padrão de link */
+    }
+
 
 </style>
